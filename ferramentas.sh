@@ -19,4 +19,5 @@ function pergunta_sim_nao() {
             * ) echo "Opção errada. Selecione s ou n.";;
         esac
     done
+    echo "Fim da pergunta"
 }
