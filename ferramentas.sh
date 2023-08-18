@@ -7,8 +7,9 @@ function pergunta_sim_nao() {
     # Função de resposta a uma pergunta, com as opções de sim ou não.
     # Necessita de input da pergunta em formato string.
     # Devolve o estado 0 para sim e estado 1 para não.
-    # Pode ser utilizado diretamente em testes de if (0 = true). Ex: if pergunta-sim-nao "Pergunta".
-    # Pode também ser utilizado lendo o valor constante em $?.
+    # Pode ser utilizado diretamente em testes de if (0 = true).
+    # Ex: if pergunta_sim_nao "Pergunta?"; then echo "Respondeu sim"; else echo "Respondeu não"; fi
+    # Pode também ser utilizado gravando, imediatamente a seguir ao uso da função, o valor contido em $? numa variável.
 
     while true; do
         echo -e "$1 [s/n]: "
