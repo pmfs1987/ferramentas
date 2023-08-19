@@ -32,8 +32,8 @@ function menu_texto_simples () {
     # O código expõe as opções com um número e abrir parêntese (ex: 1) Opção 1.).
     # Devolve o estado correspondente ao índice de cada opção + 1, que pode ser usado em condições if.
     # Suporta, no máximo 254 opções.
-    # Ex: opcoes=("Opção 1." "Opção 2."); menu_texto_simples "${opcoes[@]}"
-    # Ex: menu_texto_simples "Opção 1." "Opção 2."
+    # Ex: opcoes=(0 "Opção 1." "Opção 2."); menu_texto_simples "${opcoes[@]}"
+    # Ex: menu_texto_simples 1 "Opção 1." "Opção 2."
     
     menu_texto_simples_opcoes=("$@")
     if [ "$menu_texto_simples_opcoes" = 0 ]
