@@ -63,3 +63,20 @@ function menu_texto_simples () {
         esac
     done
 }
+
+function gestao_repositorio_verifica_publicidade () {
+
+    # Função que verifica a existência de um repositório disponível no GitHub e se é público ou privado.
+    # Necessita dos seguintes argumentos:
+    #   1º argumento - nome do utilizador no GitHub
+    #   2º argumento - nome do repositório no GitHub
+    
+    gestao_repositorio_verifica_publicidade_utilizador="$1"
+    gestao_repositorio_verifica_publicidade_repositorio="$2"
+
+}
+
+function gestao_repositorio_verifica_versao () {
+
+    # Função que verifica se um repositório presente no computador está na última versão disponível no GitHub.
+}
