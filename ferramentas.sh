@@ -31,6 +31,7 @@ function menu_texto_simples () {
     # Quando o 1º argumento (ou o 1º elemento do array) seja diferente de 0 e de 1 a função termina com o valor de 0 (return 0).
     # O código expõe as opções com um número e abrir parêntese (ex: 1) Opção 1.).
     # Devolve o estado correspondente ao índice de cada opção + 1, que pode ser usado em condições if.
+    # Pode ser utilizado gravando, imediatamente a seguir ao uso da função, o valor contido em $? numa variável.
     # Suporta, no máximo 254 opções.
     # Ex: opcoes=(0 "Opção 1." "Opção 2."); menu_texto_simples "${opcoes[@]}"
     # Ex: menu_texto_simples 1 "Opção 1." "Opção 2."
@@ -66,17 +67,33 @@ function menu_texto_simples () {
 
 function gestao_repositorio_verifica_publicidade () {
 
-    # Função que verifica a existência de um repositório disponível no GitHub e se é público ou privado.
+    # Função que verifica se um repositório é público na respetiva lista de um utilizador no GitHub.
     # Necessita dos seguintes argumentos:
-    #   1º argumento - nome do utilizador no GitHub
-    #   2º argumento - nome do repositório no GitHub
-    
-    gestao_repositorio_verifica_publicidade_utilizador="$1"
-    gestao_repositorio_verifica_publicidade_repositorio="$2"
+    #   1º argumento - nome do utilizador no GitHub;
+    #   2º argumento - nome do repositório no GitHub.
+    # Devolve os seguintes estados:
+    #   estado 0 quando o repositório é público (isto é, quando se encontra na lista de repositórios públicos);
+    #   estado 1 quando não encontra qualquer lista de repositórios públicos (por exemplo, porque o nome do utilizador está errado);
+    #   estado 2 quando o repositório é privado ou não existe (isto é, quando não encontra o repositório na referida lista).
+    # Pode ser utilizado gravando, imediatamente a seguir ao uso da função, o valor contido em $? numa variável.
 
+    gestao_repositorio_verifica_publicidade_repositorios=($(curl -s https://api.github.com/users/"$1"/repos | grep -Po " {4}\"name\": \"\K[^\"]+(?=\",)")) 
+    [ ${#gestao_repositorio_verifica_publicidade_repositorios[@]} = 0 ] && return 1
+    for gestao_repositorio_verifica_publicidade_repositorio in ${gestao_repositorio_verifica_publicidade_repositorios[@]}
+    do
+        [ $gestao_repositorio_verifica_publicidade_repositorio = "$2" ] && return 0
+    done
+    return 2
 }
 
 function gestao_repositorio_verifica_versao () {
 
     # Função que verifica se um repositório presente no computador está na última versão disponível no GitHub.
+    # Utiliza a função gestao_repositorio_verifica_publicidade.
+    # Necessita dos seguintes argumentos:
+    #   1º argumento - nome do utilizador no GitHub;
+    #   2º argumento - nome do repositório no GitHub.
+    # Caso o repositório seja privado, é necessário introduzir manualmente, a pedido do script, um personal token válido do GitHub.
+
+    echo "Falta código"
 }
