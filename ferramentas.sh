@@ -90,10 +90,63 @@ function gestao_repositorio_verifica_versao () {
 
     # Função que verifica se um repositório presente no computador está na última versão disponível no GitHub.
     # Utiliza a função gestao_repositorio_verifica_publicidade.
+    # Pressupõe que o repositório já está presente localmente.
+    # Pressupõe que o conjunto dos scripts está localizado em "$HOME/Scripts/"
+    # Pressupõe que, sem uso do git, as versões instaladas dos repositórios estejam escritas no ficheiro "$HOME/Scripts/.versões/nome_do_repositorio_no_GitHub".
     # Necessita dos seguintes argumentos:
     #   1º argumento - nome do utilizador no GitHub;
-    #   2º argumento - nome do repositório no GitHub.
+    #   2º argumento - nome do repositório no GitHub;
+    #   3º argumento - nome da pasta onde o repositório está localmente.
     # Caso o repositório seja privado, é necessário introduzir manualmente, a pedido do script, um personal token válido do GitHub.
+    # Devolve os seguintes estados:
+    #   estado 0 quando a versão do repositório no GitHub é igual ou inferior à versão do repositório local.
+    #   estado 1 nos seguintes erros:
+    #       - o repositório não tem versão de release;
+    #       - erro na função gestao_repositorio_verifica_publicidade (estado dessa função != 0 e != 2);
+    #   estado 2 quando a versão do repositório no GitHub é superior à versão do repositório local.
+    #   estado 3 quando o repositório não está presente em "$HOME/Scripts/nome do repositório" ou quando não existe ficheiro com a versão (em "$HOME/Scripts/.versões/nome_do_script").
+    # Pode ser utilizado gravando, imediatamente a seguir ao uso da função, o valor contido em $? numa variável.
 
-    echo "Falta código"
+    unset $gestao_repositorio_verifica_versao_local
+    unset $gestao_repositorio_verifica_versao_github
+    gestao_repositorio_verifica_publicidade "$1" "$2"
+    gestao_repositorio_verifica_versao_resultado=$?
+    if [ $gestao_repositorio_verifica_versao_resultado = 0 ]
+    then
+        gestao_repositorio_verifica_versao_github=$(curl -s https://api.github.com/repos/"$1"/"$2"/releases/latest | grep -Po " {2}\"tag_name\": \"\K[^\"]+(?=\",)")
+    elif [ $gestao_repositorio_verifica_versao_resultado = 2 ]
+    then
+        echo -e "O repositório escolhido poderá ser privado. Introduza um personal token do GitHub válido."
+        read gestao_repositorio_verifica_versao_token
+        gestao_repositorio_verifica_versao_github=$(curl -sH "Authorization: token $gestao_repositorio_verifica_versao_token" https://api.github.com/repos/"$1"/"$2"/releases/latest | grep -Po " {2}\"tag_name\": \"\K[^\"]+(?=\",)")
+    fi
+    [ -z "$gestao_repositorio_verifica_versao_github" ] && return 1
+    if [ -d "$HOME/Scripts/$3" ]
+    then
+        if [ -d "$HOME/Scripts/$3/.git" ]
+        then
+            cd "$HOME/Scripts/$3"
+
+        else
+            [ -f "$HOME/Scripts/.versões/$2" ] && gestao_repositorio_verifica_versao_local=$(cat "$HOME/Scripts/.versões/$2")
+        fi
+    else
+        return 3
+    fi
+    [ -z "$gestao_repositorio_verifica_versao_local" ] && return 3
+    gestao_repositorio_verifica_versao_temporario=$IFS
+    read -r -a gestao_repositorio_verifica_versao_github_numeros <<< $gestao_repositorio_verifica_versao_github
+    read -r -a gestao_repositorio_verifica_versao_local_numeros <<< $gestao_repositorio_verifica_versao_local
+    IFS=$gestao_repositorio_verifica_versao_temporario
+    for gestao_repositorio_verifica_versao_iteracao in "${!gestao_repositorio_verifica_versao_github_numeros[@]}"
+    do
+        [[ ${gestao_repositorio_verifica_versao_github_numeros[$gestao_repositorio_verifica_versao_iteracao]} > ${gestao_repositorio_verifica_versao_local_numeros[gestao_repositorio_verifica_versao_iteracao]}]] && return 2
+    done
+    return 0
+}
+
+function gestao_repositorio_instala () {
+
+    # Função que transfere do GitHub e move um repositório para $HOME/Scripts/pasta e regista a versão correspondente em $HOME/Scripts/.versões/nome_do_repositório_no_GitHub.
+    echo "Função que saca e move um repositório do GitHub para $HOME/Scripts/"
 }
