@@ -15,8 +15,8 @@ function pergunta_sim_nao() {
         echo -e "$1 [s/n]: "
         read pergunta_sim_nao_resposta
         case $pergunta_sim_nao_resposta in
-            [Ss]* ) return 0;;
-            [Nn]* ) return 1;;
+            S|s ) return 0;;
+            N|n ) return 1;;
             * ) echo "Opção errada. Selecione s ou n.";;
         esac
     done
@@ -145,7 +145,7 @@ function gestao_repositorio_verifica_versao () {
         then
             gestao_repositorio_verifica_versao_caminho=$(pwd)
             cd "$HOME/Scripts/$3"
-            gestao_repositorio_verifica_versao_local=$(git describe --tags)
+            gestao_repositorio_verifica_versao_local=$(git describe --tags | grep -oP "\d+\.\d+\.\d+(?=-)?")
             cd "$gestao_repositorio_verifica_versao_caminho"
         else
             [ -f "$HOME/Scripts/.versões/$2" ] && gestao_repositorio_verifica_versao_local=$(cat "$HOME/Scripts/.versões/$2") || return 4
@@ -161,7 +161,7 @@ function gestao_repositorio_verifica_versao () {
     IFS=$gestao_repositorio_verifica_versao_temporario
     for gestao_repositorio_verifica_versao_iteracao in "${!gestao_repositorio_verifica_versao_github_numeros[@]}"
     do
-        [[ ${gestao_repositorio_verifica_versao_github_numeros[$gestao_repositorio_verifica_versao_iteracao]} > ${gestao_repositorio_verifica_versao_local_numeros[gestao_repositorio_verifica_versao_iteracao]} ]] && return 2
+        [ ${gestao_repositorio_verifica_versao_github_numeros[$gestao_repositorio_verifica_versao_iteracao]} -gt ${gestao_repositorio_verifica_versao_local_numeros[gestao_repositorio_verifica_versao_iteracao]} ] && return 2
     done
     return 0
 }
