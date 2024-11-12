@@ -2,6 +2,12 @@
 
 # Script que contém funções recorrentes utilizadas noutros scripts
 
+## Definição de variáveis gerais usadas noutros scripts
+
+sep="  *  "
+
+## Fim da definição de variáveis gerais
+
 function pergunta_sim_nao() {
 
     # Função de resposta a uma pergunta, com as opções de sim ou não.
@@ -33,18 +39,18 @@ function menu_texto_simples () {
     # Devolve o estado correspondente ao índice de cada opção + 1, que pode ser usado em condições if.
     # Pode ser utilizado gravando, imediatamente a seguir ao uso da função, o valor contido em $? numa variável.
     # Suporta, no máximo 254 opções.
-    # Ex: opcoes=(0 "Opção 1." "Opção 2."); menu_texto_simples "${opcoes[@]}"
-    # Ex: menu_texto_simples 1 "Opção 1." "Opção 2."
+    # Ex: opcoes=(0 "Opção 1" "Opção 2"); menu_texto_simples "${opcoes[@]}"
+    # Ex: menu_texto_simples 1 "Opção 1" "Opção 2"
     
     menu_texto_simples_opcoes=("$@")
     if [ "$menu_texto_simples_opcoes" = 0 ]
     then
-        menu_texto_simples_opcao_saida="Sair."
+        menu_texto_simples_opcao_saida="Sair"
     elif [ "$menu_texto_simples_opcoes" = 1 ]
     then
         menu_texto_simples_opcao_saida="Voltar ao menu anterior."
     else
-        echo "Erro na função menu_text_simples: o 1º argumento tem de ser 0 ou 1."
+        echo "Erro na função menu_texto_simples: o 1º argumento tem de ser 0 ou 1."
         return 0
     fi
     unset menu_texto_simples_opcoes[0]
