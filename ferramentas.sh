@@ -48,7 +48,7 @@ function menu_texto_simples () {
         menu_texto_simples_opcao_saida="Sair"
     elif [ "$menu_texto_simples_opcoes" = 1 ]
     then
-        menu_texto_simples_opcao_saida="Voltar ao menu anterior."
+        menu_texto_simples_opcao_saida="Voltar ao menu anterior"
     else
         echo "Erro na função menu_texto_simples: o 1º argumento tem de ser 0 ou 1."
         return 0
@@ -59,11 +59,11 @@ function menu_texto_simples () {
     do
         case "$menu_texto_simples_opcao" in
             "$menu_texto_simples_opcao_saida")
-                break;;
+                return $((${#menu_texto_simples_opcoes[@]}+1));;
             *)
                 for menu_texto_simples_indice in "${!menu_texto_simples_opcoes[@]}"
                 do
-                    [ "${menu_texto_simples_opcoes[menu_texto_simples_indice]}" = "$menu_texto_simples_opcao" ] && return $((menu_texto_simples_indice+1))
+                    [ "${menu_texto_simples_opcoes[menu_texto_simples_indice]}" = "$menu_texto_simples_opcao" ] && return $menu_texto_simples_indice
                 done
                 echo "Opção errada. Escolha entre 1 e $((${#menu_texto_simples_opcoes[@]}+1))"
                 ;;
